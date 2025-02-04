@@ -1,0 +1,28 @@
+// .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - run: npm install
+      - run: npm run test
+      - run: npx cucumber-js
+      - run: npx playwright test
+      - name: Upload Playwright videos
+        uses: actions/upload-artifact@v2
+        with:
+          name: playwright-videos
+          path: test-results/**/*.webm
